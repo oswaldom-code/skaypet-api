@@ -1,0 +1,47 @@
+# requiere: https://taskfile.dev/#/installation
+version: "3"
+
+vars:
+  PROJECT_PATH: '{{.PWD}}'
+  # ENV: prod or dev
+  ENV: dev
+
+dotenv: ['{{.PROJECT_PATH}}/config/ENV/{{.ENV}}/.env']
+
+tasks:
+    test: 
+        desc: Start db and pgadmin services
+        cmds: 
+            - go run main.go server
+
+    db.start:
+        desc: Start db and pgadmin services
+        cmds:
+            - docker-compose -f config/docker/docker-compose.yml up -d --remove-orphans 
+
+    db.stop:
+        desc: Stop db and pgadmin services
+        cmds:
+            - docker rm -f {{.DB_CONTAINER_NAME}} > /dev/null 2>&1 || true
+            - docker rm -f {{.PGADMIN_CONTAINER_NAME}} > /dev/null 2>&1 || true
+
+    build:
+        desc: Build app
+        cmds:
+            - GOFLAGS=-mod=mod go build -o bin/{{.APP_NAME}} main.go 
+
+    run:
+        desc: Run  app
+        cmds:
+            - GOFLAGS=-mod=mod go run main.go server
+
+    swagger.generate:
+        desc: Generate Go code ok!
+        cmds:
+            - GOFLAGS=-mod=mod oapi-codegen --generate types  --package rest api/swagger.yml > pkg/interface/http/rest/model.gen.go
+            - GOFLAGS=-mod=mod oapi-codegen --generate server --package rest api/swagger.yml > pkg/interface/http/rest/server.gen.go
+
+    swagger.doc:
+        desc: Swagger documentation
+        cmds:
+            - docker run -i yousan/swagger-yaml-to-html < api/swagger.yml > doc/api.html

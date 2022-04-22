@@ -1,0 +1,42 @@
+openapi: 3.0.3
+info:
+  title: Skaypet API
+  description: API for Skaypet
+  contact:
+    name: API Support
+    url: http://www.example.com/support
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+
+# tags are used for organizing operations
+tags:
+  - name: system
+    description: System operations
+  - name: auth
+    description: Athentication and authorization operations
+  - name: admins
+    description: Administrators operations
+
+paths:
+  /ping:
+    summary: ping endpoint
+    description: path to check if the server is up
+    get:
+      tags:
+        - system
+      operationId: ping
+      summary: Returns pong if the application is healthy
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples:
+                The application is healthy:
+                  value: pong
+          description: The application is healthy
+

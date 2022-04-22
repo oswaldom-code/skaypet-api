@@ -3,3 +3,6 @@
 # docker volume
 db/data/*
 
+# enviroment variables
+config/ENV/dev/.env
+config/ENV/prod/.env
