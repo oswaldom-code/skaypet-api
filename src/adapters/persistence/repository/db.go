@@ -9,7 +9,7 @@ import (
 
 	"github.com/oswaldom-code/skaypet-api/pkg/config"
 	"github.com/oswaldom-code/skaypet-api/pkg/log"
-	"github.com/oswaldom-code/skaypet-api/src/domain/models"
+	"github.com/oswaldom-code/skaypet-api/src/services/port"
 )
 
 // store handles the database context
@@ -17,15 +17,10 @@ type store struct {
 	db *gorm.DB
 }
 
-type Repository interface {
-	// Pet
-	GetPets() ([]models.Pet, error)
-}
-
 var dbStorage *store
 
 // New returns a new instance of a Store
-func New(dsn config.DBConfig) Repository {
+func New(dsn config.DBConfig) port.Repository {
 	cnn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%v sslmode=%s TimeZone=America/Bogota",
 		dsn.Host, dsn.User, dsn.Password, dsn.Database, dsn.Port, dsn.SSLMode)
 	db, err := gorm.Open(postgres.Open(cnn), &gorm.Config{})
@@ -40,13 +35,10 @@ func New(dsn config.DBConfig) Repository {
 	return &store{db: db.Set("gorm:auto_preload", true)}
 }
 
-func GetPersistence() Repository {
+func GetPersistence() port.Repository {
 	if dbStorage == nil {
-		fmt.Println("Es NIL")
 		return New(config.GetDBConfig())
 	}
-	fmt.Println("NO Es NIL")
-
 	return dbStorage
 }
 
@@ -67,7 +59,6 @@ func (s *store) OrderByLimitOffset(orderBy, direction *string, limit, offset *in
 		if offset != nil {
 			db = db.Offset(int(*offset))
 		}
-
 		return db
 	}
 }

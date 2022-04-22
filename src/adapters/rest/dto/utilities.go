@@ -24,3 +24,8 @@ func AgeInYearsMonthsDays(t time.Time) string {
 	}
 	return fmt.Sprintf("%d años, %d meses, %d dias", years, months, days)
 }
+
+func TimeStringToTime(timeString string) time.Time {
+	t, _ := time.Parse("2006-01-02", timeString)
+	return t
+}

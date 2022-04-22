@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/oswaldom-code/skaypet-api/pkg/log"
 	"github.com/oswaldom-code/skaypet-api/src/domain/models"
 )
@@ -18,8 +20,8 @@ func (s *store) CreatePet(pet models.Pet) (models.Pet, error) {
 }
 
 func (s *store) GetPet(id int64) (models.Pet, error) {
-	var pet models.Pet
-	db := s.db.Table("pet").Joins("inner join specie on pet.specie_id = specie.id").Where("pet.id = ?", id).First(&pet)
+	pet := models.Pet{}
+	db := s.db.First(&pet, id)
 	if db.Error != nil {
 		log.ErrorWithFields("Error getting pet: ", log.Fields{
 			"error": db.Error,
@@ -31,8 +33,8 @@ func (s *store) GetPet(id int64) (models.Pet, error) {
 }
 
 func (s *store) GetPets() ([]models.Pet, error) {
-	var pets []models.Pet
-	db := s.db.Table("pet").Joins("inner join specie on pet.specie_id = specie.id").Order("id").Find(&pets)
+	pets := []models.Pet{}
+	db := s.db.Order("id").Find(&pets)
 	if db.Error != nil {
 		log.ErrorWithFields("Error getting pets: ", log.Fields{"error": db.Error})
 		return pets, db.Error
@@ -40,8 +42,20 @@ func (s *store) GetPets() ([]models.Pet, error) {
 	return pets, nil
 }
 
-func (s *store) UpdatePet(pet models.Pet) (models.Pet, error) {
-	db := s.db.Save(&pet)
+func (s *store) ifExistsPet(id int64) bool {
+	db := s.db.First(&models.Pet{}, id)
+	return db.RowsAffected > 0
+}
+
+func (s *store) UpdatePet(id int64, pet models.Pet) (models.Pet, error) {
+	if !s.ifExistsPet(id) {
+		log.ErrorWithFields("Error updating pet: ", log.Fields{
+			"error": "Pet not found",
+			"pet":   pet,
+		})
+		return pet, errors.New("Pet not found")
+	}
+	db := s.db.Table("pets").Where("id = ?", id).Omit("id").Save(&pet)
 	if db.Error != nil {
 		log.ErrorWithFields("Error updating pet: ", log.Fields{
 			"error": db.Error,
@@ -62,4 +76,14 @@ func (s *store) DeletePet(id int64) error {
 		return db.Error
 	}
 	return nil
+}
+
+func (s *store) CountPets() (int64, error) {
+	var count int64
+	db := s.db.Model(&models.Pet{}).Count(&count)
+	if db.Error != nil {
+		log.ErrorWithFields("Error counting pets: ", log.Fields{"error": db.Error})
+		return 0, db.Error
+	}
+	return count, nil
 }

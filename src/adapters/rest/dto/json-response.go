@@ -6,6 +6,11 @@ type MessageResponse struct {
 }
 
 type PetsResponse struct {
+	Status string   `json:"status"`
+	Pets   []PetDTO `json:"pets"`
+}
+
+type PetResponse struct {
 	Status string `json:"status"`
-	Pets   []PetDTO  `json:"pets"`
+	Pet    PetDTO `json:"pets"`
 }

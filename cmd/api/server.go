@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"log"
-
 	"github.com/oswaldom-code/skaypet-api/pkg/config"
+	"github.com/oswaldom-code/skaypet-api/pkg/log"
 	persistence "github.com/oswaldom-code/skaypet-api/src/adapters/persistence/repository"
 	"github.com/oswaldom-code/skaypet-api/src/adapters/rest/routes"
 	"github.com/spf13/cobra"
@@ -31,6 +30,8 @@ func NewServer() {
 	r := routes.SetupRouter()
 	err := r.Run(":" + viper.GetString("server.port"))
 	if err != nil {
-		log.Println("Error: ", err.Error())
+		log.ErrorWithFields("Error starting server: ", log.Fields{
+			"error": err,
+		})
 	}
 }
