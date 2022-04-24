@@ -10,5 +10,5 @@ type Repository interface {
 	UpdatePet(id int64, pet models.Pet) (models.Pet, error)
 	DeletePet(id int64) error
 	CountPets() (int64, error)
-	//CountPetsByGender() (int64, int64, error)
+	QuantifySpecies() ([]models.Specie, error)
 }

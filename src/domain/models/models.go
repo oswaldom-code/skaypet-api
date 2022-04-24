@@ -12,11 +12,20 @@ type Pet struct {
 	Name        string    `json:"name"`
 	Gender      string    `json:"gender"`
 	DateOfBirth time.Time `json:"dateOfBirtth"`
-	SpecieId    int64     `gorm:"foreignKey:SpecieId;references:ID"`
+	Specie      string    `json:"specie"`
 	Status      bool      `json:"status"`
 }
 
 type Specie struct {
-	ID   int64  `json:"specie_id"`
-	Name string `json:"specie_nombre"`
+	Total  int64  `json:"total"`
+	Specie string `json:"specie"`
+}
+
+type PetGeneralStatistics struct {
+	TotalPets                   int64    `json:"totalPets"`
+	AverageAgeYears             int      `json:"averageAge"`
+	AverageAgeMonth             int      `json:"averageAgeMonth"`
+	NameOfMostNumerousSpecies   string   `json:"mostNumerousSpecies"`
+	NumberOfMostNumerousSpecies int      `json:"numberOfMostNumerousSpecies"`
+	Species                     []Specie `json:"species"`
 }

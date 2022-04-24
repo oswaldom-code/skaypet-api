@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"strings"
+
 	"github.com/oswaldom-code/skaypet-api/src/domain/models"
 )
 
@@ -11,7 +13,7 @@ type PetDTO struct {
 	Gender      string `json:"genero"`
 	DateOfBirth string `json:"fechaNacimiento"`
 	Status      bool   `json:"status"`
-	Specie      int64  `json:"specieId"`
+	Specie      string `json:"specie"`
 }
 
 func PetToPetDTO(pet models.Pet) PetDTO {
@@ -22,7 +24,7 @@ func PetToPetDTO(pet models.Pet) PetDTO {
 		Gender:      pet.Gender,
 		DateOfBirth: pet.DateOfBirth.Format("2006-01-02"),
 		Status:      pet.Status,
-		Specie:      pet.SpecieId,
+		Specie:      pet.Specie,
 	}
 	return petDTO
 }
@@ -37,7 +39,7 @@ func PetsToPetsDTO(pets []models.Pet) []PetDTO {
 			Gender:      pet.Gender,
 			DateOfBirth: pet.DateOfBirth.Format("2006-01-02"),
 			Status:      pet.Status,
-			Specie:      pet.SpecieId,
+			Specie:      pet.Specie,
 		}
 		petsDTO = append(petsDTO, petDTO)
 	}
@@ -46,13 +48,35 @@ func PetsToPetsDTO(pets []models.Pet) []PetDTO {
 
 func PetDTOToPet(PetDTO PetDTO) models.Pet {
 	pet := models.Pet{
-		ID:   PetDTO.ID,
-		Name: PetDTO.Name,
-		//Age:         AgeInYearsMonthsDays(PetDTO.DateOfBirth),
-		Gender:      PetDTO.Gender,
+		ID:          PetDTO.ID,
+		Name:        strings.ToUpper(PetDTO.Name),
+		Gender:      strings.ToUpper(PetDTO.Gender),
 		DateOfBirth: TimeStringToTime(PetDTO.DateOfBirth),
 		Status:      PetDTO.Status,
-		SpecieId:    PetDTO.Specie,
+		Specie:      strings.ToUpper(PetDTO.Specie),
 	}
 	return pet
+}
+
+func PetsGeneralStatisticsToPetsGeneralStatisticsDTO(petsGeneralStatistics models.PetGeneralStatistics) PetsGeneralStatisticsResponse {
+	petsGeneralStatisticsResponse := PetsGeneralStatisticsResponse{
+		Status:          "success",
+		TotalPets:       petsGeneralStatistics.TotalPets,
+		AverageAgeYears: petsGeneralStatistics.AverageAgeYears,
+		AverageAgeMonth: petsGeneralStatistics.AverageAgeMonth,
+		Species:         SpeciesToSpeciesDTO(petsGeneralStatistics.Species),
+	}
+	return petsGeneralStatisticsResponse
+}
+
+func SpeciesToSpeciesDTO(species []models.Specie) []SpecieDTO {
+	speciesDTO := []SpecieDTO{}
+	for _, specie := range species {
+		specieDTO := SpecieDTO{
+			Name:  specie.Specie,
+			Total: specie.Total,
+		}
+		speciesDTO = append(speciesDTO, specieDTO)
+	}
+	return speciesDTO
 }

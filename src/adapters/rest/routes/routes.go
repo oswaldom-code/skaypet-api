@@ -21,10 +21,11 @@ func SetupRouter() *gin.Engine {
 	{
 		public.GET("/ping", controllers.Pong)
 		public.POST("/mascota/crear", controllers.CreatePet)
-		public.GET("/mascota/listar", controllers.GetPets)
+		public.GET("/mascotas/listar", controllers.GetPets)
 		public.GET("/mascota/:id", controllers.GetPet)
 		public.PATCH("/mascota/:id", controllers.UpdatePet)
 		public.DELETE("/mascota/:id", controllers.DeletePet)
+		public.GET("/estadisticas/mascotas", controllers.PetsGeneralStatistics)
 	}
 	return router
 }

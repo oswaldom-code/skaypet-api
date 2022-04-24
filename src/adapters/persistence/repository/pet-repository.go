@@ -7,6 +7,10 @@ import (
 	"github.com/oswaldom-code/skaypet-api/src/domain/models"
 )
 
+var (
+	SPECIES_AND_COUNT = "SELECT specie, count(*) AS total FROM pets GROUP BY specie HAVING COUNT(*)>1"
+)
+
 func (s *store) CreatePet(pet models.Pet) (models.Pet, error) {
 	db := s.db.Create(&pet)
 	if db.Error != nil {
@@ -86,4 +90,14 @@ func (s *store) CountPets() (int64, error) {
 		return 0, db.Error
 	}
 	return count, nil
+}
+
+func (s *store) QuantifySpecies() ([]models.Specie, error) {
+	species := []models.Specie{}
+	db := s.db.Raw(SPECIES_AND_COUNT).Scan(&species)
+	if db.Error != nil {
+		log.ErrorWithFields("Error counting pets: ", log.Fields{"error": db.Error})
+		return []models.Specie{}, db.Error
+	}
+	return species, nil
 }

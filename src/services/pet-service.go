@@ -23,7 +23,6 @@ func (p *petSevice) CreatePet(pet models.Pet) (models.Pet, error) {
 			"error": err,
 			"pet":   pet,
 		})
-
 		return models.Pet{}, err
 	}
 	return createPet, nil
@@ -32,6 +31,10 @@ func (p *petSevice) CreatePet(pet models.Pet) (models.Pet, error) {
 func (p *petSevice) GetPet(id int64) (models.Pet, error) {
 	getPet, err := p.repository.GetPet(id)
 	if err != nil {
+		log.ErrorWithFields("Error getting pet: ", log.Fields{
+			"error": err,
+			"petId": id,
+		})
 		return models.Pet{}, err
 	}
 	return getPet, nil
@@ -40,6 +43,9 @@ func (p *petSevice) GetPet(id int64) (models.Pet, error) {
 func (p *petSevice) GetPets() ([]models.Pet, error) {
 	getPets, err := p.repository.GetPets()
 	if err != nil {
+		log.ErrorWithFields("Error getting pets: ", log.Fields{
+			"error": err,
+		})
 		return []models.Pet{}, err
 	}
 	return getPets, nil
@@ -48,6 +54,11 @@ func (p *petSevice) GetPets() ([]models.Pet, error) {
 func (p *petSevice) UpdatePet(id int64, pet models.Pet) (models.Pet, error) {
 	updatePet, err := p.repository.UpdatePet(id, pet)
 	if err != nil {
+		log.ErrorWithFields("Error updating pet: ", log.Fields{
+			"error": err,
+			"petId": id,
+			"pet":   pet,
+		})
 		return models.Pet{}, err
 	}
 	return updatePet, nil
@@ -55,6 +66,10 @@ func (p *petSevice) UpdatePet(id int64, pet models.Pet) (models.Pet, error) {
 
 func (p *petSevice) DeletePet(id int64) error {
 	if err := p.repository.DeletePet(id); err != nil {
+		log.ErrorWithFields("Error deleting pet: ", log.Fields{
+			"error": err,
+			"petId": id,
+		})
 		return err
 	}
 	return nil
@@ -63,7 +78,34 @@ func (p *petSevice) DeletePet(id int64) error {
 func (p *petSevice) CountPets() (int64, error) {
 	TotalPets, err := p.repository.CountPets()
 	if err != nil {
+		log.ErrorWithFields("Error counting pets: ", log.Fields{
+			"error": err,
+		})
 		return 0, err
 	}
 	return TotalPets, nil
+}
+
+func (p *petSevice) GetPetsGeneralStatistics() (models.PetGeneralStatistics, error) {
+	pets, err := p.repository.GetPets()
+	if err != nil {
+		log.ErrorWithFields("Error getting pets: ", log.Fields{
+			"error": err,
+		})
+		return models.PetGeneralStatistics{}, err
+	}
+	petGeneralStatistics := GetPetGeneralStatisticsHelper(pets)
+	petGeneralStatistics.Species = p.GetQuantifySpecies()
+	return petGeneralStatistics, nil
+}
+
+func (p *petSevice) GetQuantifySpecies() []models.Specie {
+	quantifySpecies, err := p.repository.QuantifySpecies()
+	if err != nil {
+		log.ErrorWithFields("Error GetQuantifySpecies species: ", log.Fields{
+			"error": err,
+		})
+		return []models.Specie{}
+	}
+	return quantifySpecies
 }

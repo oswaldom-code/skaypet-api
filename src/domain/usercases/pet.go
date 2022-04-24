@@ -8,4 +8,6 @@ type PetService interface {
 	GetPets() ([]models.Pet, error)
 	UpdatePet(id int64, pet models.Pet) (models.Pet, error)
 	DeletePet(id int64) error
+	GetPetsGeneralStatistics() (models.PetGeneralStatistics, error)
+	GetQuantifySpecies() []models.Specie
 }

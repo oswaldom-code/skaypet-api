@@ -150,3 +150,18 @@ func DeletePet(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, response)
 }
+
+func PetsGeneralStatistics(c *gin.Context) {
+	petSevice := services.NewPetSevice()
+	statistics, err := petSevice.GetPetsGeneralStatistics()
+	if err != nil {
+		response := dto.MessageResponse{
+			Status:  "error",
+			Message: err.Error(),
+		}
+		c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+	c.JSON(http.StatusOK,
+		dto.PetsGeneralStatisticsToPetsGeneralStatisticsDTO(statistics))
+}
