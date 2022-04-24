@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"strings"
 
 	"github.com/oswaldom-code/skaypet-api/pkg/log"
@@ -121,6 +122,21 @@ func (p *petSevice) GetPetsBySpecie(specie string) ([]models.Pet, error) {
 			"specie": specie,
 		})
 		return []models.Pet{}, err
+	}
+	return pets, nil
+}
+
+func (p *petSevice) GetPetsByGender(gender string) ([]models.Pet, error) {
+	gender = strings.ToUpper(gender)
+	if (gender != "MASCULINO") && (gender != "FEMENINO") {
+		return []models.Pet{}, errors.New("unrecognized gender, please enter 'masculino' or 'femenino'")
+	}
+	pets, err := p.repository.GetPetsByGender(gender[:1])
+	if err != nil {
+		log.ErrorWithFields("Error getting pets by gender: ", log.Fields{
+			"error":  err,
+			"gender": strings.ToUpper(gender),
+		})
 	}
 	return pets, nil
 }

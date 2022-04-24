@@ -181,3 +181,19 @@ func GetPetsBySpecie(c *gin.Context) {
 	c.JSON(http.StatusOK,
 		dto.PetsToPetsDTO(specieResult))
 }
+
+func GetPetsByGender(c *gin.Context) {
+	petSevice := services.NewPetSevice()
+	genderParamer := c.Param("gender")
+	petsByGenderResult, err := petSevice.GetPetsByGender(genderParamer)
+	if err != nil {
+		response := dto.MessageResponse{
+			Status:  "error",
+			Message: err.Error(),
+		}
+		c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+	c.JSON(http.StatusOK,
+		dto.PetsToPetsDTO(petsByGenderResult))
+}

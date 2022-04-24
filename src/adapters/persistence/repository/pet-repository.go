@@ -112,8 +112,24 @@ func (s *store) GetPetsBySpecie(specie string) ([]models.Pet, error) {
 		})
 		return pets, db.Error
 	}
-	if db.RowsAffected > 0 {
-		return pets, nil
+	if db.RowsAffected == 0 {
+		return pets, errors.New("Specie not found: " + specie)
 	}
-	return pets, errors.New("Specie not found: " + specie)
+	return pets, nil
+}
+
+func (s *store) GetPetsByGender(gender string) ([]models.Pet, error) {
+	pets := []models.Pet{}
+	db := s.db.Where("gender = ?", gender).Find(&pets)
+	if db.Error != nil {
+		log.ErrorWithFields("Error getting pets by gender: ", log.Fields{
+			"error":  db.Error,
+			"gender": gender,
+		})
+		return pets, db.Error
+	}
+	if db.RowsAffected == 0 {
+		return pets, errors.New("Gender not found: " + gender)
+	}
+	return pets, nil
 }

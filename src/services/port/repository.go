@@ -12,4 +12,5 @@ type Repository interface {
 	CountPets() (int64, error)
 	QuantifySpecies() ([]models.Specie, error)
 	GetPetsBySpecie(string) ([]models.Pet, error)
+	GetPetsByGender(string) ([]models.Pet, error)
 }
