@@ -10,4 +10,5 @@ type PetService interface {
 	DeletePet(id int64) error
 	GetPetsGeneralStatistics() (models.PetGeneralStatistics, error)
 	GetQuantifySpecies() []models.Specie
+	GetPetsBySpecie(specie string) ([]models.Pet, error)
 }

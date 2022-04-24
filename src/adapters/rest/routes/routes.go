@@ -26,6 +26,7 @@ func SetupRouter() *gin.Engine {
 		public.PATCH("/mascota/:id", controllers.UpdatePet)
 		public.DELETE("/mascota/:id", controllers.DeletePet)
 		public.GET("/estadisticas/mascotas", controllers.PetsGeneralStatistics)
+		public.GET("/mascotas/listar/:specie", controllers.GetPetsBySpecie)
 	}
 	return router
 }

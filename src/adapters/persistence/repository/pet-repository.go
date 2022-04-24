@@ -46,13 +46,13 @@ func (s *store) GetPets() ([]models.Pet, error) {
 	return pets, nil
 }
 
-func (s *store) ifExistsPet(id int64) bool {
+func (s *store) existsPet(id int64) bool {
 	db := s.db.First(&models.Pet{}, id)
 	return db.RowsAffected > 0
 }
 
 func (s *store) UpdatePet(id int64, pet models.Pet) (models.Pet, error) {
-	if !s.ifExistsPet(id) {
+	if !s.existsPet(id) {
 		log.ErrorWithFields("Error updating pet: ", log.Fields{
 			"error": "Pet not found",
 			"pet":   pet,
@@ -100,4 +100,20 @@ func (s *store) QuantifySpecies() ([]models.Specie, error) {
 		return []models.Specie{}, db.Error
 	}
 	return species, nil
+}
+
+func (s *store) GetPetsBySpecie(specie string) ([]models.Pet, error) {
+	pets := []models.Pet{}
+	db := s.db.Where("specie = ?", specie).Find(&pets)
+	if db.Error != nil {
+		log.ErrorWithFields("Error getting pets by specie: ", log.Fields{
+			"error":  db.Error,
+			"specie": specie,
+		})
+		return pets, db.Error
+	}
+	if db.RowsAffected > 0 {
+		return pets, nil
+	}
+	return pets, errors.New("Specie not found: " + specie)
 }

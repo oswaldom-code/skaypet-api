@@ -29,3 +29,8 @@ type PetGeneralStatistics struct {
 	NumberOfMostNumerousSpecies int      `json:"numberOfMostNumerousSpecies"`
 	Species                     []Specie `json:"species"`
 }
+
+type PetSpecieStatistics struct {
+	TotalPets int64  `json:"totalPets"`
+	Specie    string `json:"specie"`
+}

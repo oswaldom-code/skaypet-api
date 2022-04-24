@@ -1,6 +1,8 @@
 package services
 
 import (
+	"strings"
+
 	"github.com/oswaldom-code/skaypet-api/pkg/log"
 	"github.com/oswaldom-code/skaypet-api/src/adapters/persistence/repository"
 	"github.com/oswaldom-code/skaypet-api/src/domain/models"
@@ -109,4 +111,16 @@ func (p *petSevice) GetQuantifySpecies() []models.Specie {
 		return []models.Specie{}
 	}
 	return quantifySpecies
+}
+
+func (p *petSevice) GetPetsBySpecie(specie string) ([]models.Pet, error) {
+	pets, err := p.repository.GetPetsBySpecie(strings.ToUpper(specie))
+	if err != nil {
+		log.ErrorWithFields("Error getting pets by specie: ", log.Fields{
+			"error":  err,
+			"specie": specie,
+		})
+		return []models.Pet{}, err
+	}
+	return pets, nil
 }
