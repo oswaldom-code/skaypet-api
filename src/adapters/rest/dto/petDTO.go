@@ -60,11 +60,12 @@ func PetDTOToPet(PetDTO PetDTO) models.Pet {
 
 func PetsGeneralStatisticsToPetsGeneralStatisticsDTO(petsGeneralStatistics models.PetGeneralStatistics) PetsGeneralStatisticsResponse {
 	petsGeneralStatisticsResponse := PetsGeneralStatisticsResponse{
-		Status:          "success",
-		TotalPets:       petsGeneralStatistics.TotalPets,
-		AverageAgeYears: petsGeneralStatistics.AverageAgeYears,
-		AverageAgeMonth: petsGeneralStatistics.AverageAgeMonth,
-		Species:         SpeciesToSpeciesDTO(petsGeneralStatistics.Species),
+		Status:             "success",
+		TotalPets:          petsGeneralStatistics.TotalPets,
+		AverageAgeYears:    petsGeneralStatistics.AverageAgeYears,
+		AverageAgeMonth:    petsGeneralStatistics.AverageAgeMonth,
+		MostNumerousSpecie: petsGeneralStatistics.NameOfMostNumerousSpecies,
+		Species:            SpeciesToSpeciesDTO(petsGeneralStatistics.Species),
 	}
 	return petsGeneralStatisticsResponse
 }

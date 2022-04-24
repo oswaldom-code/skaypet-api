@@ -55,3 +55,15 @@ func GetPetGeneralStatisticsHelper(pets []models.Pet) models.PetGeneralStatistic
 	}
 	return petGeneralStatistics
 }
+
+func GetMostNumerousSpecieHelper(species []models.Specie) string {
+	var maxPets int64
+	var mostNumerousSpecie string
+	for _, specie := range species {
+		if specie.Total > maxPets {
+			maxPets = specie.Total
+			mostNumerousSpecie = specie.Specie
+		}
+	}
+	return mostNumerousSpecie
+}

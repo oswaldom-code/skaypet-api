@@ -21,9 +21,10 @@ type SpecieDTO struct {
 }
 
 type PetsGeneralStatisticsResponse struct {
-	Status          string      `json:"status"`
-	TotalPets       int64       `json:"totalMascotas"`
-	AverageAgeYears int         `json:"edadPromedioAnios"`
-	AverageAgeMonth int         `json:"edadPromedioMeses"`
-	Species         []SpecieDTO `json:"especies"`
+	Status             string      `json:"status"`
+	TotalPets          int64       `json:"totalMascotas"`
+	AverageAgeYears    int         `json:"edadPromedioAnios"`
+	AverageAgeMonth    int         `json:"edadPromedioMeses"`
+	MostNumerousSpecie string      `json:"specieMasNumerosa"`
+	Species            []SpecieDTO `json:"especies"`
 }

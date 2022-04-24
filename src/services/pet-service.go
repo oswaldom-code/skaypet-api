@@ -96,6 +96,7 @@ func (p *petSevice) GetPetsGeneralStatistics() (models.PetGeneralStatistics, err
 	}
 	petGeneralStatistics := GetPetGeneralStatisticsHelper(pets)
 	petGeneralStatistics.Species = p.GetQuantifySpecies()
+	petGeneralStatistics.NameOfMostNumerousSpecies = GetMostNumerousSpecieHelper(petGeneralStatistics.Species)
 	return petGeneralStatistics, nil
 }
 
