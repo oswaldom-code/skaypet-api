@@ -12,4 +12,5 @@ type PetService interface {
 	GetQuantifySpecies() []models.Specie
 	GetPetsBySpecie(specie string) ([]models.Pet, error)
 	GetPetsByGender(gender string) ([]models.Pet, error)
+	GetPetsStatisticsBySpecie(gender string) (models.PetsStatisticsBySpecie, error)
 }

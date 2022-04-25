@@ -166,6 +166,22 @@ func PetsGeneralStatistics(c *gin.Context) {
 		dto.PetsGeneralStatisticsToPetsGeneralStatisticsDTO(statistics))
 }
 
+func GetPetsStatisticsBySpecie(c *gin.Context) {
+	petSevice := services.NewPetSevice()
+	specie := c.Param("specie")
+	statistics, err := petSevice.GetPetsStatisticsBySpecie(specie)
+	if err != nil {
+		response := dto.MessageResponse{
+			Status:  "error",
+			Message: err.Error(),
+		}
+		c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+	c.JSON(http.StatusOK,
+		dto.PetsStatisticsBySpecieToPetsStatisticsBySpecieDTO(statistics))
+}
+
 func GetPetsBySpecie(c *gin.Context) {
 	petSevice := services.NewPetSevice()
 	specieParamer := c.Param("specie")

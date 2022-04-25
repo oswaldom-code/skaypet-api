@@ -24,7 +24,17 @@ type PetsGeneralStatisticsResponse struct {
 	Status             string      `json:"status"`
 	TotalPets          int64       `json:"totalMascotas"`
 	AverageAgeYears    int         `json:"edadPromedioAnios"`
-	AverageAgeMonth    int         `json:"edadPromedioMeses"`
+	AverageAgeMonths   int         `json:"edadPromedioMeses"`
 	MostNumerousSpecie string      `json:"specieMasNumerosa"`
+	AgeStdDesviation   float64     `json:"DesvStdEdadEnMeses"`
 	Species            []SpecieDTO `json:"especies"`
+}
+
+type PetsStatisticsBySpecieResponse struct {
+	Status           string  `json:"status"`
+	Specie           string  `json:"especie"`
+	TotalPets        int64   `json:"totalMascotasEspecie"`
+	AverageAgeYears  int     `json:"edadPromedioAnios"`
+	AverageAgeMonths int     `json:"edadPromedioMeses"`
+	AgeStdDesviation float64 `json:"DesvStdEdadEnMeses"`
 }

@@ -97,10 +97,37 @@ func (p *petSevice) GetPetsGeneralStatistics() (models.PetGeneralStatistics, err
 		})
 		return models.PetGeneralStatistics{}, err
 	}
-	petGeneralStatistics := GetPetGeneralStatisticsHelper(pets)
-	petGeneralStatistics.Species = p.GetQuantifySpecies()
-	petGeneralStatistics.NameOfMostNumerousSpecies = GetMostNumerousSpecieHelper(petGeneralStatistics.Species)
+	statistics := GetPetStatistics(pets)
+	summaryOfPetsBySpecies := p.GetQuantifySpecies()
+	petGeneralStatistics := models.PetGeneralStatistics{
+		TotalPets:                 statistics.TotalPets,
+		AverageAgeYears:           statistics.AverageAgeYears,
+		AverageAgeMonths:          statistics.AverageAgeMonths,
+		AgeStdDesviation:          statistics.AgeStdDesviation,
+		Species:                   summaryOfPetsBySpecies,
+		NameOfMostNumerousSpecies: GetMostNumerousSpecieHelper(summaryOfPetsBySpecies),
+	}
 	return petGeneralStatistics, nil
+}
+
+func (p *petSevice) GetPetsStatisticsBySpecie(specie string) (models.PetsStatisticsBySpecie, error) {
+	petsBySpecie, err := p.repository.GetPetsBySpecie(strings.ToUpper(specie))
+	if err != nil {
+		log.ErrorWithFields("Error getting pets by specie: ", log.Fields{
+			"error":  err,
+			"specie": specie,
+		})
+		return models.PetsStatisticsBySpecie{}, err
+	}
+	statistics := GetPetStatistics(petsBySpecie)
+	petsStatisticsBySpecie := models.PetsStatisticsBySpecie{
+		Specie:           strings.ToUpper(specie),
+		TotalPets:        statistics.TotalPets,
+		AverageAgeYears:  statistics.AverageAgeYears,
+		AverageAgeMonths: statistics.AverageAgeMonths,
+		AgeStdDesviation: statistics.AgeStdDesviation,
+	}
+	return petsStatisticsBySpecie, nil
 }
 
 func (p *petSevice) GetQuantifySpecies() []models.Specie {

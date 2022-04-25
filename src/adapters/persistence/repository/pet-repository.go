@@ -92,6 +92,22 @@ func (s *store) CountPets() (int64, error) {
 	return count, nil
 }
 
+func (s *store) CountPetsBySpecie(specie string) (int64, error) {
+	pets := []models.Pet{}
+	db := s.db.Where("specie = ?", specie).Find(&pets)
+	if db.Error != nil {
+		log.ErrorWithFields("Error counting pets by specie: ", log.Fields{
+			"error":  db.Error,
+			"specie": specie,
+		})
+		return 0, db.Error
+	}
+	if db.RowsAffected == 0 {
+		return 0, errors.New("Specie not found: " + specie)
+	}
+	return db.RowsAffected, nil
+}
+
 func (s *store) QuantifySpecies() ([]models.Specie, error) {
 	species := []models.Specie{}
 	db := s.db.Raw(SPECIES_AND_COUNT).Scan(&species)

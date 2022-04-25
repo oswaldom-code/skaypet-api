@@ -25,9 +25,10 @@ func SetupRouter() *gin.Engine {
 		public.GET("/mascota/:id", controllers.GetPet)
 		public.PATCH("/mascota/:id", controllers.UpdatePet)
 		public.DELETE("/mascota/:id", controllers.DeletePet)
-		public.GET("/estadisticas/mascotas", controllers.PetsGeneralStatistics)
 		public.GET("/mascotas/listar/:specie", controllers.GetPetsBySpecie)
 		public.GET("/mascotas/listar/genero/:gender", controllers.GetPetsByGender)
+		public.GET("/estadisticas/mascotas", controllers.PetsGeneralStatistics)
+		public.GET("/estadisticas/mascotas/especie/:specie", controllers.GetPetsStatisticsBySpecie)
 	}
 	return router
 }
