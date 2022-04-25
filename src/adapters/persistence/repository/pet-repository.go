@@ -26,6 +26,9 @@ func (s *store) CreatePet(pet models.Pet) (models.Pet, error) {
 func (s *store) GetPet(id int64) (models.Pet, error) {
 	pet := models.Pet{}
 	db := s.db.First(&pet, id)
+	if db.RowsAffected == 0 {
+		return models.Pet{},errors.New("Pet not found")
+	}
 	if db.Error != nil {
 		log.ErrorWithFields("Error getting pet: ", log.Fields{
 			"error": db.Error,
@@ -51,15 +54,15 @@ func (s *store) existsPet(id int64) bool {
 	return db.RowsAffected > 0
 }
 
-func (s *store) UpdatePet(id int64, pet models.Pet) (models.Pet, error) {
-	if !s.existsPet(id) {
+func (s *store) UpdatePet(pet models.Pet) (models.Pet, error) {
+	if !s.existsPet(pet.ID){
 		log.ErrorWithFields("Error updating pet: ", log.Fields{
 			"error": "Pet not found",
 			"pet":   pet,
 		})
 		return pet, errors.New("Pet not found")
 	}
-	db := s.db.Table("pets").Where("id = ?", id).Omit("id").Save(&pet)
+	db := s.db.Table("pets").Where("id = ?", pet.ID).Omit("id").Save(&pet)
 	if db.Error != nil {
 		log.ErrorWithFields("Error updating pet: ", log.Fields{
 			"error": db.Error,

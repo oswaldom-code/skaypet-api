@@ -54,12 +54,11 @@ func (p *petSevice) GetPets() ([]models.Pet, error) {
 	return getPets, nil
 }
 
-func (p *petSevice) UpdatePet(id int64, pet models.Pet) (models.Pet, error) {
-	updatePet, err := p.repository.UpdatePet(id, pet)
+func (p *petSevice) UpdatePet(pet models.Pet) (models.Pet, error) {
+	updatePet, err := p.repository.UpdatePet(pet)
 	if err != nil {
 		log.ErrorWithFields("Error updating pet: ", log.Fields{
 			"error": err,
-			"petId": id,
 			"pet":   pet,
 		})
 		return models.Pet{}, err

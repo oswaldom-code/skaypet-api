@@ -6,7 +6,7 @@ type PetService interface {
 	CreatePet(pet models.Pet) (models.Pet, error)
 	GetPet(id int64) (models.Pet, error)
 	GetPets() ([]models.Pet, error)
-	UpdatePet(id int64, pet models.Pet) (models.Pet, error)
+	UpdatePet(pet models.Pet) (models.Pet, error)
 	DeletePet(id int64) error
 	GetPetsGeneralStatistics() (models.PetGeneralStatistics, error)
 	GetQuantifySpecies() []models.Specie

@@ -61,7 +61,7 @@ func GetPet(c *gin.Context) {
 			Status:  "error",
 			Message: err.Error(),
 		}
-		c.JSON(http.StatusInternalServerError, response)
+		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 	response := dto.PetResponse{
@@ -100,16 +100,7 @@ func UpdatePet(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil {
-		response := dto.MessageResponse{
-			Status:  "error",
-			Message: "invalid id value",
-		}
-		c.JSON(http.StatusBadRequest, response)
-		return
-	}
-	pet, err := petSevice.UpdatePet(id, dto.PetDTOToPet(petDTO))
+	pet, err := petSevice.UpdatePet(dto.PetDTOToPet(petDTO))
 	if err != nil {
 		response := dto.MessageResponse{
 			Status:  "error",
@@ -212,4 +203,12 @@ func GetPetsByGender(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK,
 		dto.PetsToPetsDTO(petsByGenderResult))
+}
+
+func Help(c *gin.Context) {
+	c.HTML(
+		http.StatusOK,
+		"doc/api.html",
+		gin.H{},
+	)
 }
