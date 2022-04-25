@@ -4,39 +4,386 @@ info:
   description: API for Skaypet
   contact:
     name: API Support
-    url: http://www.example.com/support
-    email: you@your-company.com
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+    url: http://www.domain.com/support
+    email: support@domain.com
   version: 1.0.0
 
-# tags are used for organizing operations
-tags:
-  - name: system
-    description: System operations
-  - name: auth
-    description: Athentication and authorization operations
-  - name: admins
-    description: Administrators operations
+servers:
+  -
+    url: 'https://{domain}:{port}/api/{version}'
+    description: Skaypet API
+    variables:
+      domain:
+        default: localhost
+      port:
+        default: '9000'
+      version:
+        default: 'v1.0'
 
+tags:
+  - name: Mascotas
+    description: Operaciones de CRUD
+  - name: Reportes
+    description: Reportes y estadisticas
+  - name: Sistema
+    description: Operaciones del sistema
+  - name: Documentacion
+    description: Documentation de la API
+    
 paths:
   /ping:
-    summary: ping endpoint
-    description: path to check if the server is up
     get:
       tags:
-        - system
+        - Sistema
       operationId: ping
-      summary: Returns pong if the application is healthy
+      summary: 'Verificar que el servio atienda peticiones'
+      description: Verificar que el servicio se encuentre en linea
       responses:
         '200':
+          description: Petición exitosa
           content:
             application/json:
               schema:
-                type: boolean
-              examples:
-                The application is healthy:
-                  value: pong
-          description: The application is healthy
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    description: Mensaje de respuesta
+                  status:
+                    type: string
+                    description: Estado de la respuesta
+                example:
+                  status: 'success'
+                  mensaje: 'pong'
+  /mascota/crear:
+    post:
+      tags:
+        - Mascotas
+      summary: 'Crear un registro de mascota'
+      description: Registra una nueva mascota
+      requestBody:
+        description: Datos de la mascota
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/mascota-crear'
+      responses:
+        '201':
+          description: Creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mascota-mostrar'
+              example:
+                status: 'success'
+                mascota:
+                  id: 1
+                  nombre: 'Leonidas'
+                  edad: '1 año, 2 meses y 22 días'
+                  genero: 'M'
+                  fechaNacimiento: '2021-02-03'
+                  status: true
+        '400':
+          description: 'Error al procesar solicitud'
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/peticionError'
+  /mascotas:
+    get:
+      tags:
+        - Mascotas
+      summary: 'Mostrar la lista de mascotas'
+      description: Retornar una lista de mascotas
+      responses:
+        '200':
+          description: Petición exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mascotas-listar'
+        '500':
+          description: Error interno de sistema
+          content:
+            aplicatiion/json:
+              schema:
+                $ref: '#/components/schemas/peticionError'
+  /mascota/{id}:
+    get:
+      tags:
+        - Mascotas
+      summary: 'Obtener un registro de mascota'
+      description: Retorna los datos de una mascota dado su id
+      parameters:
+        - name: id
+          in: path
+          description: Identificador de la mascota
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Petición exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mascota-mostrar'
+  /mascota:
+    put:
+      tags:
+        - Mascotas
+      summary: 'Actualiza un registro de mascota'
+      description: Actualizar datos de una mascota dado su id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/mascota-mostrar'
+      responses:
+        '200':
+          description: Peticion exitosa
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/solicitudOK'
+  /mascotas/genero/{genero-nombre}:
+    get:
+      tags:
+        - Mascotas
+      summary: Listar mascotas filtradas por el genero
+      description: "Retorna una lista de mascotas filtrada por genero\n\nEjemplo:\n\t\n\t/mascotas/genero/femenino\n\t/mascotas/genero/masculino"
+      parameters:
+        - name: genero-nombre
+          in: path
+          description: Genero
+          required: true
+          schema:
+            type: string
+            enum:
+              - 'femenino'
+              - 'masculino'
+      responses:
+        '200':
+          description: Petición exitosa
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/mascotas-listar'
+  /mascota/{Id}:
+    delete:
+      tags:
+        - Mascotas
+      summary: 'Registrar una moscota como eliminada'
+      description: Registra como eliminada una mascota
+      parameters:
+        - name: Id
+          description: Id de la mascota
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful response
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/solicitudOK'
+  /mascotas/especie/{especie-nombre}:
+    get:
+      tags:
+        - Mascotas
+      summary: Listar mascotas filtradas por el especie
+      description: "Retorna una lista de mascotas filtrada por especie\n\nEjemplo:\n\t\n\t/mascotas/especie/felino\n\t/mascotas/especie/canino\n\t/mascotas/especie/pez"
+      parameters:
+        - name: especie-nombre
+          in: path
+          description: Especie animal
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Petición exitosa
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/mascotas-listar'
+  /estadisticas/mascotas:
+    get:
+      tags:
+        - Reportes
+      summary: Retorna las estadisticas generales
+      description: "Retorna las estadisticas generales de las mascota:</br>
+        <ul>
+          <li>totalMascotas</li>
+          <li>edadPromedioAnios</li>
+          <li>edadPromedioMeses</li>
+          <li>specieMasNumerosa</li>
+          <li>DesvStdEdadEnMeses</li>
+        </ul>
+        </br>
+        La edad de las mascotas se muestran en años y la fracción que corresponda en meses
+        "
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/statisticasMascotas'
+  /estadisticas/mascotas/especie/{especie-nombre}:
+    get:
+      tags:
+        - Reportes
+      summary: Estadisticas de una especie en concreto
+      description: "Retorna las estadisticas de una especie dada:</br>
+        <ul>
+          <li>totalMascotas</li>
+          <li>edadPromedioAnios</li>
+          <li>edadPromedioMeses</li>
+          <li>specieMasNumerosa</li>
+          <li>DesvStdEdadEnMeses</li>
+        </ul>
+        </br>
+        La edad de las mascotas se muestran en años y la fracción que corresponda en meses
+        "
+      parameters:
+        - name: especie-nombre
+          in: path
+          description: Especie animal
+          required: true
+          schema:
+            type: string
+          example: felino
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/statisticasMascotas'
+  /help:
+    get:
+      tags:
+        - Documentacion
+      summary: 'Documentación de la API'
+      description: Muestra al usuario la documentación de la API siguiendo los estandares OpenAPI 3.0
 
+components:
+  schemas:
+    statisticasMascotas:
+      type: object
+      properties:
+          status:
+            type: string
+            description: Estado resultante de la operación
+          totalMascotas:
+            type: integer
+            description: Numero total de mascotas registrados en la BD
+          edadPromedioAnios:
+            type: integer
+            format: int64
+            description: Edad promedio de las mascotas años
+          edadPromedioMeses:
+            type: integer
+            format: int64
+            description: la fracción correspondiente en meses de la edad promedio de las mascotas
+          mascotas:
+            type: array
+            items:
+              $ref: '#/components/schemas/mascota-mostrar'
+      
+    mascota-crear:
+      type: object
+      properties:
+        nombre:
+          type: string
+          description: Nombre de la mascota
+        genero:
+          type: string
+          description: Sexo de la mascota
+          enum:
+            - 'M'
+            - 'F'
+        fechaNacimiento:
+          type: string
+          format: date
+          description: Fecha de nacimiento de la mascota
+        status:
+          type: boolean
+          description: Estado de la mascota activo/inactivo
+          enum:
+            - true
+            - false
+    mascota-mostrar:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador de la mascota
+        nombre:
+          type: string
+          description: Nombre de la mascota
+        edad:
+          type: string
+          description: Edad de la mascota expresada en años, meses y días
+        genero:
+          type: string
+          description: Sexo de la mascota
+          enum:
+            - 'M'
+            - 'F'
+        fechaNacimiento:
+          type: string
+          format: date
+          description: Fecha de nacimiento de la mascota
+        status:
+          type: boolean
+          description: Estado de la mascota activo/inactivo
+          enum:
+            - true
+            - false
+      example:
+        id: 36
+        nombre: LEONIDAS
+        genero: M
+        fechaNacimiento: '2022-02-03'
+        status: true
+        specie: FELINO
+    solicitudOK:
+      type: object
+      properties:
+        status:
+          type: string
+        mensaje:
+          type: string
+      example:
+        status: 'success'
+        mensaje: 'Operación exitosa'
+    peticionError:
+      type: object
+      properties:
+        status:
+          type: string
+        mensaje:
+          type: string
+      example:
+        status: 'error'
+        mensaje: 'Mensaje con detalles del error'
+    mascotas-listar:
+      type: object
+      properties:
+          status:
+            type: string
+            description: Estado resultante de la operación
+            enum:
+              - 'success'
+              - 'error'
+          mascotas:
+            type: array
+            items:
+              $ref: '#/components/schemas/mascota-mostrar'

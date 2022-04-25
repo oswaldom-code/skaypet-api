@@ -1,0 +1,60 @@
+{{ define "doc/api.html"}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Swagger UI</title>
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro:300,600|Titillium+Web:400,600,700"
+    rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.43.0/swagger-ui.css">
+  <style>
+    html {
+      box-sizing: border-box;
+      overflow: -moz-scrollbars-vertical;
+      overflow-y: scroll;
+    }
+
+    *,
+    *:before,
+    *:after {
+      box-sizing: inherit;
+    }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.43.0/swagger-ui-bundle.js"> </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.43.0/swagger-ui-standalone-preset.js"> </script>
+  <script>
+    window.onload = function () {
+      var spec = { "openapi": "3.0.3", "info": { "title": "Skaypet API", "description": "API for Skaypet", "contact": { "name": "API Support", "url": "http://www.domain.com/support", "email": "support@domain.com" }, "version": "1.0.0" }, "servers": [{ "url": "https://{domain}:{port}/api/{version}", "description": "Skaypet API", "variables": { "domain": { "default": "localhost" }, "port": { "default": "9000" }, "version": { "default": "v1.0" } } }], "tags": [{ "name": "Mascotas", "description": "Operaciones de CRUD" }, { "name": "Reportes", "description": "Reportes y estadisticas" }, { "name": "Sistema", "description": "Operaciones del sistema" }, { "name": "Documentacion", "description": "Documentation de la API" }], "paths": { "/ping": { "get": { "tags": ["Sistema"], "operationId": "ping", "summary": "Verificar que el servio atienda peticiones", "description": "Verificar que el servicio se encuentre en linea", "responses": { "200": { "description": "Petici\u00f3n exitosa", "content": { "application/json": { "schema": { "type": "object", "properties": { "mensaje": { "type": "string", "description": "Mensaje de respuesta" }, "status": { "type": "string", "description": "Estado de la respuesta" } }, "example": { "status": "success", "mensaje": "pong" } } } } } } } }, "/mascota/crear": { "post": { "tags": ["Mascotas"], "summary": "Crear un registro de mascota", "description": "Registra una nueva mascota", "requestBody": { "description": "Datos de la mascota", "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/mascota-crear" } } } }, "responses": { "201": { "description": "Creado exitosamente", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/mascota-mostrar" }, "example": { "status": "success", "mascota": { "id": 1, "nombre": "Leonidas", "edad": "1 a\u00f1o, 2 meses y 22 d\u00edas", "genero": "M", "fechaNacimiento": "2021-02-03", "status": true } } } } }, "400": { "description": "Error al procesar solicitud", "content": { "aplication/json": { "schema": { "$ref": "#/components/schemas/peticionError" } } } } } } }, "/mascotas": { "get": { "tags": ["Mascotas"], "summary": "Mostrar la lista de mascotas", "description": "Retornar una lista de mascotas", "responses": { "200": { "description": "Petici\u00f3n exitosa", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/mascotas-listar" } } } }, "500": { "description": "Error interno de sistema", "content": { "aplicatiion/json": { "schema": { "$ref": "#/components/schemas/peticionError" } } } } } } }, "/mascota/{id}": { "get": { "tags": ["Mascotas"], "summary": "Obtener un registro de mascota", "description": "Retorna los datos de una mascota dado su id", "parameters": [{ "name": "id", "in": "path", "description": "Identificador de la mascota", "required": true, "schema": { "type": "integer", "format": "int64" } }], "responses": { "200": { "description": "Petici\u00f3n exitosa", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/mascota-mostrar" } } } } } } }, "/mascota": { "put": { "tags": ["Mascotas"], "summary": "Actualiza un registro de mascota", "description": "Actualizar datos de una mascota dado su id", "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/mascota-mostrar" } } } }, "responses": { "200": { "description": "Peticion exitosa", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/solicitudOK" } } } } } } }, "/mascotas/genero/{genero-nombre}": { "get": { "tags": ["Mascotas"], "summary": "Listar mascotas filtradas por el genero", "description": "Retorna una lista de mascotas filtrada por genero\n\nEjemplo:\n\t\n\t/mascotas/genero/femenino\n\t/mascotas/genero/masculino", "parameters": [{ "name": "genero-nombre", "in": "path", "description": "Genero", "required": true, "schema": { "type": "string", "enum": ["femenino", "masculino"] } }], "responses": { "200": { "description": "Petici\u00f3n exitosa", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/mascotas-listar" } } } } } } }, "/mascota/{Id}": { "delete": { "tags": ["Mascotas"], "summary": "Registrar una moscota como eliminada", "description": "Registra como eliminada una mascota", "parameters": [{ "name": "Id", "description": "Id de la mascota", "required": true, "in": "path", "schema": { "type": "integer", "format": "int64" } }], "responses": { "200": { "description": "Successful response", "content": { "aplication/json": { "schema": { "$ref": "#/components/schemas/solicitudOK" } } } } } } }, "/mascotas/especie/{especie-nombre}": { "get": { "tags": ["Mascotas"], "summary": "Listar mascotas filtradas por el especie", "description": "Retorna una lista de mascotas filtrada por especie\n\nEjemplo:\n\t\n\t/mascotas/especie/felino\n\t/mascotas/especie/canino\n\t/mascotas/especie/pez", "parameters": [{ "name": "especie-nombre", "in": "path", "description": "Especie animal", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "Petici\u00f3n exitosa", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/mascotas-listar" } } } } } } }, "/estadisticas/mascotas": { "get": { "tags": ["Reportes"], "summary": "Retorna las estadisticas generales", "description": "Retorna las estadisticas generales de las mascota:</br> <ul> <li>totalMascotas</li> <li>edadPromedioAnios</li> <li>edadPromedioMeses</li> <li>specieMasNumerosa</li> <li>DesvStdEdadEnMeses</li> </ul> </br> La edad de las mascotas se muestran en a\u00f1os y la fracci\u00f3n que corresponda en meses ", "responses": { "200": { "description": "Successful response", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/statisticasMascotas" } } } } } } }, "/estadisticas/mascotas/especie/{especie-nombre}": { "get": { "tags": ["Reportes"], "summary": "Estadisticas de una especie en concreto", "description": "Retorna las estadisticas de una especie dada:</br> <ul> <li>totalMascotas</li> <li>edadPromedioAnios</li> <li>edadPromedioMeses</li> <li>specieMasNumerosa</li> <li>DesvStdEdadEnMeses</li> </ul> </br> La edad de las mascotas se muestran en a\u00f1os y la fracci\u00f3n que corresponda en meses ", "parameters": [{ "name": "especie-nombre", "in": "path", "description": "Especie animal", "required": true, "schema": { "type": "string" }, "example": "felino" }], "responses": { "200": { "description": "Successful response", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/statisticasMascotas" } } } } } } }, "/help": { "get": { "tags": ["Documentacion"], "summary": "Documentaci\u00f3n de la API", "description": "Muestra al usuario la documentaci\u00f3n de la API siguiendo los estandares OpenAPI 3.0" } } }, "components": { "schemas": { "statisticasMascotas": { "type": "object", "properties": { "status": { "type": "string", "description": "Estado resultante de la operaci\u00f3n" }, "totalMascotas": { "type": "integer", "description": "Numero total de mascotas registrados en la BD" }, "edadPromedioAnios": { "type": "integer", "format": "int64", "description": "Edad promedio de las mascotas a\u00f1os" }, "edadPromedioMeses": { "type": "integer", "format": "int64", "description": "la fracci\u00f3n correspondiente en meses de la edad promedio de las mascotas" }, "mascotas": { "type": "array", "items": { "$ref": "#/components/schemas/mascota-mostrar" } } } }, "mascota-crear": { "type": "object", "properties": { "nombre": { "type": "string", "description": "Nombre de la mascota" }, "genero": { "type": "string", "description": "Sexo de la mascota", "enum": ["M", "F"] }, "fechaNacimiento": { "type": "string", "format": "date", "description": "Fecha de nacimiento de la mascota" }, "status": { "type": "boolean", "description": "Estado de la mascota activo/inactivo", "enum": [true, false] } } }, "mascota-mostrar": { "type": "object", "properties": { "id": { "type": "integer", "description": "Identificador de la mascota" }, "nombre": { "type": "string", "description": "Nombre de la mascota" }, "edad": { "type": "string", "description": "Edad de la mascota expresada en a\u00f1os, meses y d\u00edas" }, "genero": { "type": "string", "description": "Sexo de la mascota", "enum": ["M", "F"] }, "fechaNacimiento": { "type": "string", "format": "date", "description": "Fecha de nacimiento de la mascota" }, "status": { "type": "boolean", "description": "Estado de la mascota activo/inactivo", "enum": [true, false] } }, "example": { "id": 36, "nombre": "LEONIDAS", "genero": "M", "fechaNacimiento": "2022-02-03", "status": true, "specie": "FELINO" } }, "solicitudOK": { "type": "object", "properties": { "status": { "type": "string" }, "mensaje": { "type": "string" } }, "example": { "status": "success", "mensaje": "Operaci\u00f3n exitosa" } }, "peticionError": { "type": "object", "properties": { "status": { "type": "string" }, "mensaje": { "type": "string" } }, "example": { "status": "error", "mensaje": "Mensaje con detalles del error" } }, "mascotas-listar": { "type": "object", "properties": { "status": { "type": "string", "description": "Estado resultante de la operaci\u00f3n", "enum": ["success", "error"] }, "mascotas": { "type": "array", "items": { "$ref": "#/components/schemas/mascota-mostrar" } } } } } } };
+      // Build a system
+      const ui = SwaggerUIBundle({
+        spec: spec,
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout"
+      })
+      window.ui = ui
+    }
+  </script>
+</body>
+
+</html>
+
+{{ end }}
