@@ -2,7 +2,6 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/oswaldom-code/skaypet-api/pkg/config"
 	"github.com/oswaldom-code/skaypet-api/src/adapters/rest/controllers"
 	"github.com/spf13/viper"
 )
@@ -12,7 +11,7 @@ func SetupRouter() *gin.Engine {
 	gin.SetMode(viper.GetString("server.mode"))
 	router := gin.Default()
 	router.Static("/home_admin", "./html/static")
-	templatesPath:=config.GetProjectPath()+"/src/adapters/rest/html/templates/**/*"
+	templatesPath:="./src/adapters/rest/html/templates/**/*"
 	router.LoadHTMLGlob(templatesPath)
 
 	api := router.Group("/api/v1.0")

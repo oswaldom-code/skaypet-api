@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -84,10 +85,26 @@ func GetProjectPath() string {
 }
 
 func Load(filename string) {
-	viper.SetEnvPrefix("communication-api")
+	viper.SetEnvPrefix("skypet-api")
 	viper.SetConfigName(filename)
 	viper.AddConfigPath("config")
 	viper.AddConfigPath(GetProjectPath() + "/config")
+	viper.SetDefault("server.host", "0.0.0.0")
+	viper.SetDefault("server.port", 9000)
+	viper.SetDefault("server.scheme", "http")
+	viper.SetDefault("storage.db.host",os.Getenv("DB_HOST"))
+	viper.SetDefault("storage.db.port", os.Getenv("DB_PORT"))
+	viper.SetDefault("storage.db.database", os.Getenv("DB_NAME"))
+	viper.SetDefault("storage.db.user", os.Getenv("DB_USER"))
+	viper.SetDefault("storage.db.password", os.Getenv("DB_PASSWORD"))
+	viper.SetDefault("storage.db.max_connections", 20)
+	viper.SetDefault("storage.db.sslmode", "disable")
+	viper.SetDefault("logging.level", "DEBUG")
+	viper.SetDefault("logging.errorLogFile", "error.log")
+	viper.SetDefault("email.smtp_server", os.Getenv("SMTP_SERVER"))
+	viper.SetDefault("email.port", 587)
+	viper.SetDefault("email.host", "https://skypet.comm")
+	viper.SetDefault("email.user", "skypet@gmail.com")
 	viper.AutomaticEnv()
 	replacer := strings.NewReplacer("-", "_", ".", "_")
 	viper.SetEnvKeyReplacer(replacer)
