@@ -11,9 +11,9 @@ server:
 storage:
   db:
     user: postgres
-    password: SDKJF90345PT6LSMN5DLK5URLQ5
-    host: db.cmbogkso5eem.us-east-1.rds.amazonaws.com
-    port: 5432
+    password: supersecret
+    host: localhost
+    port: 54032
     database: db
     max_connections: 6
     sslmode: disable
