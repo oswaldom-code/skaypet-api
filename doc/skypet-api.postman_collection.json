@@ -1,0 +1,371 @@
+{
+	"variables": [],
+	"info": {
+		"name": "skypet-api",
+		"_postman_id": "ba4b0eb8-0df9-32ee-f20b-0b5462fca8fa",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/mascota/crear",
+			"request": {
+				"url": {
+					"raw": "http://127.0.0.1:9000/api/v1.0/mascota/crear",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"v1.0",
+						"mascota",
+						"crear"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "oswaldoeliezer876@gmail.com",
+							"equals": true,
+							"description": "",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"equals": true,
+							"description": "",
+							"disabled": true
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n      \"nombre\": \"Leonidas\",\n      \"genero\": \"M\",\n      \"fechaNacimiento\": \"2022-02-03\",\n      \"status\": true,\n      \"specieId\": 1\n      \"specie\": \"FELINO\"\n}"
+				},
+				"description": "Registra una nueva mascota"
+			},
+			"response": []
+		},
+		{
+			"name": "/mascotas",
+			"request": {
+				"url": {
+					"raw": "http://127.0.0.1:9000/api/v1.0/mascotas",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"v1.0",
+						"mascotas"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "oswaldoeliezer876@gmail.com",
+							"equals": true,
+							"description": "",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"equals": true,
+							"description": "",
+							"disabled": true
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n      \"nombre\": \"Leonidas\",\n      \"genero\": \"M\",\n      \"fechaNacimiento\": \"2022-02-03\",\n      \"status\": true,\n      \"specieId\": 1\n}"
+				},
+				"description": "Retorna una lista de mascotas"
+			},
+			"response": []
+		},
+		{
+			"name": "/ping",
+			"request": {
+				"url": {
+					"raw": "http://127.0.0.1:9000/api/v1.0/ping",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"v1.0",
+						"ping"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "oswaldoeliezer876@gmail.com",
+							"equals": true,
+							"description": "",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"equals": true,
+							"description": "",
+							"disabled": true
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n      \"nombre\": \"Leonidas\",\n      \"genero\": \"M\",\n      \"fechaNacimiento\": \"2022-02-03\",\n      \"status\": true,\n      \"specieId\": 1\n}"
+				},
+				"description": "Para verificar que el servicio se encuentre en linea"
+			},
+			"response": []
+		},
+		{
+			"name": " /mascota/{id}",
+			"request": {
+				"url": {
+					"raw": "http://127.0.0.1:9000/api/v1.0/mascota/5",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"v1.0",
+						"mascota",
+						"5"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "oswaldoeliezer876@gmail.com",
+							"equals": true,
+							"description": "",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"equals": true,
+							"description": "",
+							"disabled": true
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n      \"nombre\": \"Leonidas2\",\n      \"genero\": \"M\",\n      \"fechaNacimiento\": \"2022-02-03\",\n      \"status\": true,\n      \"specieId\": 2\n}"
+				},
+				"description": "Retorna los datos de una mascota dado su ID"
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH: /mascota/{id}",
+			"request": {
+				"url": {
+					"raw": "http://127.0.0.1:9000/api/v1.0/mascota/actualizar",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"v1.0",
+						"mascota",
+						"actualizar"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "oswaldoeliezer876@gmail.com",
+							"equals": true,
+							"description": "",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"equals": true,
+							"description": "",
+							"disabled": true
+						}
+					],
+					"variable": []
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"id\": 36,\n        \"nombre\": \"LEONIDAS\",\n        \"genero\": \"M\",\n        \"fechaNacimiento\": \"2022-02-03\",\n        \"status\": true,\n        \"specie\": \"FELINO\"\n}\n"
+				},
+				"description": "Actualiza un registro de mascota"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE: /mascota/{id}",
+			"request": {
+				"url": {
+					"raw": "http://127.0.0.1:9000/api/v1.0/mascota/17",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"v1.0",
+						"mascota",
+						"17"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "oswaldoeliezer876@gmail.com",
+							"equals": true,
+							"description": "",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"equals": true,
+							"description": "",
+							"disabled": true
+						}
+					],
+					"variable": []
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n      \"nombre\": \"Leonidas\",\n      \"genero\": \"M\",\n      \"fechaNacimiento\": \"2022-02-03\",\n      \"status\": true,\n      \"specieId\": 1\n}"
+				},
+				"description": "Registra como eliminada una mascota"
+			},
+			"response": []
+		},
+		{
+			"name": "/estadisticas/mascotas",
+			"request": {
+				"url": "http://127.0.0.1:9000/api/v1.0/estadisticas/mascotas",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Reorna las estadisticas generales"
+			},
+			"response": []
+		},
+		{
+			"name": "/estadisticas/mascotas/especie/{nombre-especie}",
+			"request": {
+				"url": "http://127.0.0.1:9000/api/v1.0/estadisticas/mascotas/especie/canino",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Retorna estadisticas de una especie en concreto\n\nEjempo:\n\n\t/estadisticas/mascotas/especie/canino\n\t/estadisticas/mascotas/especie/felino"
+			},
+			"response": []
+		},
+		{
+			"name": "/mascotas/{nombre-especie}",
+			"request": {
+				"url": "http://127.0.0.1:9000/api/api/v1.0/mascotas/canino",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Retorna una lista de mascotas filtrada por especie\n\nEjemplo: \n\t\n\t/mascotas/canino\n\t/mascotas/felino"
+			},
+			"response": []
+		},
+		{
+			"name": "/mascotas/listar/genero/{genero}",
+			"request": {
+				"url": "http://127.0.0.1:9000/api/v1.0/mascotas/listar/genero/femenino",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Retorna una lista de mascotas filtrada por genero\n\nEjemplo:\n\t\n\t/mascotas/listar/genero/femenino\n\t/mascotas/listar/genero/masculino"
+			},
+			"response": []
+		}
+	]
+}
