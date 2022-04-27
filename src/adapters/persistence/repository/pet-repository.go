@@ -26,6 +26,9 @@ func (s *store) CreatePet(pet models.Pet) (models.Pet, error) {
 func (s *store) GetPet(id int64) (models.Pet, error) {
 	pet := models.Pet{}
 	db := s.db.First(&pet, id)
+	if db.RowsAffected == 0 {
+		return models.Pet{},errors.New("Pet not found")
+	}
 	if db.Error != nil {
 		log.ErrorWithFields("Error getting pet: ", log.Fields{
 			"error": db.Error,
@@ -51,15 +54,15 @@ func (s *store) existsPet(id int64) bool {
 	return db.RowsAffected > 0
 }
 
-func (s *store) UpdatePet(id int64, pet models.Pet) (models.Pet, error) {
-	if !s.existsPet(id) {
+func (s *store) UpdatePet(pet models.Pet) (models.Pet, error) {
+	if !s.existsPet(pet.ID){
 		log.ErrorWithFields("Error updating pet: ", log.Fields{
 			"error": "Pet not found",
 			"pet":   pet,
 		})
 		return pet, errors.New("Pet not found")
 	}
-	db := s.db.Table("pets").Where("id = ?", id).Omit("id").Save(&pet)
+	db := s.db.Table("pets").Where("id = ?", pet.ID).Omit("id").Save(&pet)
 	if db.Error != nil {
 		log.ErrorWithFields("Error updating pet: ", log.Fields{
 			"error": db.Error,
@@ -92,6 +95,22 @@ func (s *store) CountPets() (int64, error) {
 	return count, nil
 }
 
+func (s *store) CountPetsBySpecie(specie string) (int64, error) {
+	pets := []models.Pet{}
+	db := s.db.Where("specie = ?", specie).Find(&pets)
+	if db.Error != nil {
+		log.ErrorWithFields("Error counting pets by specie: ", log.Fields{
+			"error":  db.Error,
+			"specie": specie,
+		})
+		return 0, db.Error
+	}
+	if db.RowsAffected == 0 {
+		return 0, errors.New("Specie not found: " + specie)
+	}
+	return db.RowsAffected, nil
+}
+
 func (s *store) QuantifySpecies() ([]models.Specie, error) {
 	species := []models.Specie{}
 	db := s.db.Raw(SPECIES_AND_COUNT).Scan(&species)
@@ -112,8 +131,24 @@ func (s *store) GetPetsBySpecie(specie string) ([]models.Pet, error) {
 		})
 		return pets, db.Error
 	}
-	if db.RowsAffected > 0 {
-		return pets, nil
+	if db.RowsAffected == 0 {
+		return pets, errors.New("Specie not found: " + specie)
 	}
-	return pets, errors.New("Specie not found: " + specie)
+	return pets, nil
+}
+
+func (s *store) GetPetsByGender(gender string) ([]models.Pet, error) {
+	pets := []models.Pet{}
+	db := s.db.Where("gender = ?", gender).Find(&pets)
+	if db.Error != nil {
+		log.ErrorWithFields("Error getting pets by gender: ", log.Fields{
+			"error":  db.Error,
+			"gender": gender,
+		})
+		return pets, db.Error
+	}
+	if db.RowsAffected == 0 {
+		return pets, errors.New("Gender not found: " + gender)
+	}
+	return pets, nil
 }

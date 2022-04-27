@@ -23,11 +23,20 @@ type Specie struct {
 
 type PetGeneralStatistics struct {
 	TotalPets                   int64    `json:"totalPets"`
-	AverageAgeYears             int      `json:"averageAge"`
-	AverageAgeMonth             int      `json:"averageAgeMonth"`
+	AverageAgeYears             int      `json:"averageAgeYears"`
+	AverageAgeMonths            int      `json:"averageAgeMonths"`
 	NameOfMostNumerousSpecies   string   `json:"mostNumerousSpecies"`
 	NumberOfMostNumerousSpecies int      `json:"numberOfMostNumerousSpecies"`
+	AgeStdDesviation            float64  `json:"ageStdDesviation"`
 	Species                     []Specie `json:"species"`
+}
+
+type PetsStatisticsBySpecie struct {
+	Specie           string  `json:"specie"`
+	TotalPets        int64   `json:"totalPetsBySpecie"`
+	AverageAgeYears  int     `json:"averageAgeYears"`
+	AverageAgeMonths int     `json:"averageAgeMonths"`
+	AgeStdDesviation float64 `json:"ageStdDesviation"`
 }
 
 type PetSpecieStatistics struct {

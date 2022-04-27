@@ -1,10 +1,6 @@
 package routes
 
 import (
-	"os"
-
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/oswaldom-code/skaypet-api/src/adapters/rest/controllers"
 	"github.com/spf13/viper"
@@ -12,21 +8,25 @@ import (
 
 //SetupRouter sets up routes
 func SetupRouter() *gin.Engine {
-	gin.SetMode(os.Getenv("GIN_MODE"))
+	gin.SetMode(viper.GetString("server.mode"))
 	router := gin.Default()
-	// TODO: add auth middleware
-	storeCookie := cookie.NewStore([]byte(viper.GetString("auth.secret")))
-	router.Use(sessions.Sessions("session", storeCookie))
-	public := router.Group("/v1.0")
+	router.Static("/home_admin", "./html/static")
+	templatesPath:="./src/adapters/rest/html/templates/**/*"
+	router.LoadHTMLGlob(templatesPath)
+
+	api := router.Group("/api/v1.0")
 	{
-		public.GET("/ping", controllers.Pong)
-		public.POST("/mascota/crear", controllers.CreatePet)
-		public.GET("/mascotas/listar", controllers.GetPets)
-		public.GET("/mascota/:id", controllers.GetPet)
-		public.PATCH("/mascota/:id", controllers.UpdatePet)
-		public.DELETE("/mascota/:id", controllers.DeletePet)
-		public.GET("/estadisticas/mascotas", controllers.PetsGeneralStatistics)
-		public.GET("/mascotas/listar/:specie", controllers.GetPetsBySpecie)
+		api.GET("/ping", controllers.Pong)
+		api.GET("/help", controllers.Help)
+		api.POST("/mascota/crear", controllers.CreatePet)
+		api.GET("/mascotas", controllers.GetPets)
+		api.GET("/mascota/:id", controllers.GetPet)
+		api.PUT("/mascota/actualizar", controllers.UpdatePet)
+		api.DELETE("/mascota/:id", controllers.DeletePet)
+		api.GET("/mascotas/especie/:specie", controllers.GetPetsBySpecie)
+		api.GET("/mascotas/genero/:gender", controllers.GetPetsByGender)
+		api.GET("/estadisticas/mascotas", controllers.PetsGeneralStatistics)
+		api.GET("/estadisticas/mascotas/especie/:specie", controllers.GetPetsStatisticsBySpecie)
 	}
 	return router
 }

@@ -58,14 +58,27 @@ func PetDTOToPet(PetDTO PetDTO) models.Pet {
 	return pet
 }
 
-func PetsGeneralStatisticsToPetsGeneralStatisticsDTO(petsGeneralStatistics models.PetGeneralStatistics) PetsGeneralStatisticsResponse {
+func PetsGeneralStatisticsToPetsGeneralStatisticsDTO(petsStatistics models.PetGeneralStatistics) PetsGeneralStatisticsResponse {
 	petsGeneralStatisticsResponse := PetsGeneralStatisticsResponse{
 		Status:             "success",
-		TotalPets:          petsGeneralStatistics.TotalPets,
-		AverageAgeYears:    petsGeneralStatistics.AverageAgeYears,
-		AverageAgeMonth:    petsGeneralStatistics.AverageAgeMonth,
-		MostNumerousSpecie: petsGeneralStatistics.NameOfMostNumerousSpecies,
-		Species:            SpeciesToSpeciesDTO(petsGeneralStatistics.Species),
+		TotalPets:          petsStatistics.TotalPets,
+		AverageAgeYears:    petsStatistics.AverageAgeYears,
+		AverageAgeMonths:   petsStatistics.AverageAgeMonths,
+		MostNumerousSpecie: petsStatistics.NameOfMostNumerousSpecies,
+		AgeStdDesviation:   petsStatistics.AgeStdDesviation,
+		Species:            SpeciesToSpeciesDTO(petsStatistics.Species),
+	}
+	return petsGeneralStatisticsResponse
+}
+
+func PetsStatisticsBySpecieToPetsStatisticsBySpecieDTO(petsStatistics models.PetsStatisticsBySpecie) PetsStatisticsBySpecieResponse {
+	petsGeneralStatisticsResponse := PetsStatisticsBySpecieResponse{
+		Status:           "success",
+		Specie:           petsStatistics.Specie,
+		TotalPets:        petsStatistics.TotalPets,
+		AverageAgeYears:  petsStatistics.AverageAgeYears,
+		AverageAgeMonths: petsStatistics.AverageAgeMonths,
+		AgeStdDesviation: petsStatistics.AgeStdDesviation,
 	}
 	return petsGeneralStatisticsResponse
 }

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"strings"
 
 	"github.com/oswaldom-code/skaypet-api/pkg/log"
@@ -53,12 +54,11 @@ func (p *petSevice) GetPets() ([]models.Pet, error) {
 	return getPets, nil
 }
 
-func (p *petSevice) UpdatePet(id int64, pet models.Pet) (models.Pet, error) {
-	updatePet, err := p.repository.UpdatePet(id, pet)
+func (p *petSevice) UpdatePet(pet models.Pet) (models.Pet, error) {
+	updatePet, err := p.repository.UpdatePet(pet)
 	if err != nil {
 		log.ErrorWithFields("Error updating pet: ", log.Fields{
 			"error": err,
-			"petId": id,
 			"pet":   pet,
 		})
 		return models.Pet{}, err
@@ -96,10 +96,37 @@ func (p *petSevice) GetPetsGeneralStatistics() (models.PetGeneralStatistics, err
 		})
 		return models.PetGeneralStatistics{}, err
 	}
-	petGeneralStatistics := GetPetGeneralStatisticsHelper(pets)
-	petGeneralStatistics.Species = p.GetQuantifySpecies()
-	petGeneralStatistics.NameOfMostNumerousSpecies = GetMostNumerousSpecieHelper(petGeneralStatistics.Species)
+	statistics := GetPetStatistics(pets)
+	summaryOfPetsBySpecies := p.GetQuantifySpecies()
+	petGeneralStatistics := models.PetGeneralStatistics{
+		TotalPets:                 statistics.TotalPets,
+		AverageAgeYears:           statistics.AverageAgeYears,
+		AverageAgeMonths:          statistics.AverageAgeMonths,
+		AgeStdDesviation:          statistics.AgeStdDesviation,
+		Species:                   summaryOfPetsBySpecies,
+		NameOfMostNumerousSpecies: GetMostNumerousSpecieHelper(summaryOfPetsBySpecies),
+	}
 	return petGeneralStatistics, nil
+}
+
+func (p *petSevice) GetPetsStatisticsBySpecie(specie string) (models.PetsStatisticsBySpecie, error) {
+	petsBySpecie, err := p.repository.GetPetsBySpecie(strings.ToUpper(specie))
+	if err != nil {
+		log.ErrorWithFields("Error getting pets by specie: ", log.Fields{
+			"error":  err,
+			"specie": specie,
+		})
+		return models.PetsStatisticsBySpecie{}, err
+	}
+	statistics := GetPetStatistics(petsBySpecie)
+	petsStatisticsBySpecie := models.PetsStatisticsBySpecie{
+		Specie:           strings.ToUpper(specie),
+		TotalPets:        statistics.TotalPets,
+		AverageAgeYears:  statistics.AverageAgeYears,
+		AverageAgeMonths: statistics.AverageAgeMonths,
+		AgeStdDesviation: statistics.AgeStdDesviation,
+	}
+	return petsStatisticsBySpecie, nil
 }
 
 func (p *petSevice) GetQuantifySpecies() []models.Specie {
@@ -121,6 +148,21 @@ func (p *petSevice) GetPetsBySpecie(specie string) ([]models.Pet, error) {
 			"specie": specie,
 		})
 		return []models.Pet{}, err
+	}
+	return pets, nil
+}
+
+func (p *petSevice) GetPetsByGender(gender string) ([]models.Pet, error) {
+	gender = strings.ToUpper(gender)
+	if (gender != "MASCULINO") && (gender != "FEMENINO") {
+		return []models.Pet{}, errors.New("unrecognized gender, please enter 'masculino' or 'femenino'")
+	}
+	pets, err := p.repository.GetPetsByGender(gender[:1])
+	if err != nil {
+		log.ErrorWithFields("Error getting pets by gender: ", log.Fields{
+			"error":  err,
+			"gender": strings.ToUpper(gender),
+		})
 	}
 	return pets, nil
 }
